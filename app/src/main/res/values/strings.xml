@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">BallDontLie</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">PDMII</string>
+    <string name="nav_header_subtitle">Avaliação Bimestral</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Localização Reitoria IFTO</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_descricao">Descrição</string>
+    <string name="menu_time_da_casa">Time da Casa</string>
+    <string name="menu_time_visitante">Time Visitante</string>
+    <string name="menu_resultado">Resultado</string>
+    <string name="menu_ganhador">Ganhador</string>
+    <string name="title_activity_maps_reitoria">MapsReitoria</string>
+</resources>

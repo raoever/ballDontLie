@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.example.balldontlie.ui.home.HomeFragment"
+        android:label="@string/menu_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_descricao"
+        android:name="com.example.balldontlie.ui.descricao.DescricaoFragment"
+        android:label="@string/menu_descricao"
+        tools:layout="@layout/fragment_descricao" />
+    <fragment
+        android:id="@+id/nav_resultado"
+        android:name="com.example.balldontlie.ui.resultado.ResultadoFragment"
+        android:label="@string/menu_resultado"
+        tools:layout="@layout/fragment_resultado" />
+    <fragment
+        android:id="@+id/nav_ganhador"
+        android:name="com.example.balldontlie.ui.ganhador.GanhadorFragment"
+        android:label="@string/menu_ganhador"
+        tools:layout="@layout/fragment_ganhador" />
+    <fragment
+        android:id="@+id/nav_time_da_casa"
+        android:name="com.example.balldontlie.ui.timeDaCasa.TimeDaCasaFragment"
+        android:label="@string/menu_time_da_casa"
+        tools:layout="@layout/fragment_casa" />
+    <fragment
+        android:id="@+id/nav_time_visitante"
+        android:name="com.example.balldontlie.ui.timeVisitante.TimeVisitanteFragment"
+        android:label="@string/menu_time_visitante"
+        tools:layout="@layout/fragment_visitante" />
+</navigation>
