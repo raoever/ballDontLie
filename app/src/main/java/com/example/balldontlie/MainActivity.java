@@ -1,9 +1,13 @@
 package com.example.balldontlie;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +18,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -28,7 +35,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> listaDadosTimeVisitante;
     private ArrayList<String> listaDadosResultado;
     private ArrayList<String> listaDadosGanhador;
+    private static final int CODIGO_SOLICITACAO = 1;
+    private static final String PERMISSAO_MEMORIA = Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +82,7 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                solicitarPermissao();
             }
         });
         DrawerLayout drawer = binding.drawerLayout;
@@ -93,6 +106,72 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         new obterDados().execute();
+    }
+
+    private void solicitarPermissao(){
+        int temPermissao = ContextCompat.checkSelfPermission(MainActivity.this, PERMISSAO_MEMORIA);
+        if (temPermissao != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String []{PERMISSAO_MEMORIA}, CODIGO_SOLICITACAO);
+        } else {
+            salvarDados();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                salvarDados();
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED){
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, PERMISSAO_MEMORIA)){
+                    AlertDialog.Builder builder =
+                            new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Atenção")
+                            .setMessage("Permissão necessária para a Armazenamento Externo.")
+                            .setCancelable(false)
+                            .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{PERMISSAO_MEMORIA}, CODIGO_SOLICITACAO);
+                                }
+                            })
+                            .setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(), "Resultados não foram armazenados.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+            }
+        }
+    }
+
+    private void salvarDados() {
+        String dado = listaDadosResultado.toString();
+        Log.i("salvarDados: ", dado);
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)){
+            File file = new File("/sdcard/Documents/"+"listaGanhadores.txt");
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(file);
+                OutputStreamWriter osw = new OutputStreamWriter(fos);
+                osw.write(dado);
+                osw.close();
+                fos.close();
+                Toast.makeText(getApplicationContext(), "Resultados salvos com sucesso.", Toast.LENGTH_SHORT).show();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Não há espaço.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class obterDados extends

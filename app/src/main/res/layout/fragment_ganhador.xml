@@ -10,7 +10,6 @@
         android:id="@+id/lav_android_wave_json"
         android:layout_width="200dp"
         android:layout_height="200dp"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
